@@ -1,0 +1,52 @@
+[package]
+name = "fw"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+defmt.workspace = true
+defmt-rtt.workspace = true
+display-interface-spi.workspace = true
+frames.workspace = true
+riscv.workspace = true
+static_cell.workspace = true
+tinybmp.workspace = true
+weact-studio-epd.workspace = true
+
+[dependencies.display-interface]
+workspace = true
+features = ["defmt-03"]
+
+[dependencies.embassy-executor]
+workspace = true
+features = ["defmt", "nightly"]
+
+[dependencies.embassy-time]
+workspace = true
+features = ["defmt-timestamp-uptime-us"]
+
+[dependencies.embedded-graphics]
+workspace = true
+features = ["defmt"]
+
+[dependencies.embedded-hal-bus]
+workspace = true
+features = ["async", "defmt-03"]
+
+[dependencies.esp-backtrace]
+workspace = true
+features = ["esp32c6", "defmt", "exception-handler"]
+
+[dependencies.esp-hal]
+workspace = true
+features = ["esp32c6", "defmt", "unstable"]
+
+[dependencies.esp-hal-embassy]
+workspace = true
+features = ["esp32c6", "defmt"]
+
+[dependencies.heapless]
+workspace = true
+features = ["defmt-03"]
