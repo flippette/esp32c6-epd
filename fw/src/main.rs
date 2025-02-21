@@ -1,13 +1,13 @@
 #![no_std]
 #![no_main]
-#![feature(generic_arg_infer, impl_trait_in_assoc_type)]
+#![feature(generic_arg_infer, impl_trait_in_assoc_type, impl_trait_in_bindings)]
 #![expect(unstable_features)]
 
 mod error;
 mod macros;
 mod rt;
 
-use defmt::{info, intern};
+use defmt::info;
 use defmt_rtt as _;
 use display_interface_spi::SPIInterface;
 use embassy_executor::Spawner;
@@ -89,9 +89,7 @@ async fn main(_s: Spawner) -> Result<(), Report<8>> {
     fb.clear(Color::White);
 
     for (nth, frame) in FRAMES.iter().rev().enumerate() {
-        let img = Bmp::<Color>::from_slice(frame)
-            .map_err(|_| intern!("BMP conversion error!"))
-            .into_report()?;
+        let img = Bmp::<Color>::from_slice(frame).into_report()?;
         fb.draw_iter(img.pixels().map(|px| {
             Pixel(
                 px.0,

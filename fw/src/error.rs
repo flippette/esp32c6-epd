@@ -10,10 +10,11 @@ use heapless::Vec;
 
 crate::error_def! {
     AdHoc => Str = "ad-hoc error: {}",
-    Spawn => SpawnError = "task spawn failed: {}",
-    Master => master::ConfigError = "SPI master config failed: {}",
+    BmpParse => tinybmp::ParseError = |fmt, _| write!(fmt, "BMP parse error!"),
     Display => DisplayError = "display error: {}",
     DmaBuf => DmaBufError = "DMA buffer error: {}",
+    Master => master::ConfigError = "SPI master config failed: {}",
+    Spawn => SpawnError = "task spawn failed: {}",
 }
 
 /// An error type carrying a backtrace.

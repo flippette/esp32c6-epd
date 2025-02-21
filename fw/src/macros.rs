@@ -4,7 +4,7 @@
 /// Define an error enum in the current scope.
 #[macro_export]
 macro_rules! error_def {
-    ($($variant:ident => $inner:ty = $msg:literal),+ $(,)?) => {
+    ($($variant:ident => $inner:ty = $msg:expr),+ $(,)?) => {
         pub enum Error {
             $($variant($inner)),+
         }
@@ -19,12 +19,22 @@ macro_rules! error_def {
 
         impl ::defmt::Format for Error {
             fn format(&self, fmt: ::defmt::Formatter<'_>) {
-                match self {
-                    $(Self::$variant(inner) =>
-                        ::defmt::write!(fmt, $msg, inner)),+
-                }
+                $crate::error_def! { __private self, fmt => $($variant => $inner => $msg;)+ }
             }
         }
+    };
+
+    (__private $self:expr, $fmt:expr =>) => {};
+    (__private $self:expr, $fmt:expr => $variant:ident => $inner:ty => $msg:literal; $($tail:tt)*) => {
+        $crate::error_def! { __private $self, $fmt => $variant => $inner => |fmt, inner| ::defmt::write!(fmt, $msg, inner); $($tail)* }
+    };
+    (__private $self:expr, $fmt:expr => $variant:ident => $inner:ty => $msg:expr; $($tail:tt)*) => {
+        if let Self::$variant(inner) = $self {
+            let f: impl Fn(::defmt::Formatter<'_>, &$inner) = $msg;
+            return f($fmt, inner);
+        }
+
+        $crate::error_def! { __private $self, $fmt => $($tail)* }
     };
 }
 
